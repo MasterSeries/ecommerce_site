@@ -1,0 +1,14 @@
+{
+  "appId": "com.example.ecommerce",
+  "appName": "EcommerceApp",
+  "webDir": "dist",
+  "server": {
+    "url": "https://a4d6-2402-3a80-1e11-4751-cd3-3d1-282f-3121.ngrok-free.app",
+    "cleartext": true
+  },
+  "plugins": {
+    "SplashScreen": {
+  "launchAutoHide": true
+}
+  }
+}

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}Product Detail{% endblock %}
+
+{% block content %}
+<style>
+  .product-container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .product-image {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    margin-bottom: 20px;
+  }
+
+  .product-name {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .product-price {
+    font-size: 1.4rem;
+    color: #28a745;
+    margin-bottom: 10px;
+  }
+
+  .product-desc {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group input {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 100px;
+  }
+
+  .checkout-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .checkout-btn:hover {
+    background: #0056b3;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .modal-content button {
+    margin-top: 20px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+
+  .btn-confirm {
+    background-color: #28a745;
+    color: white;
+    margin-right: 10px;
+  }
+
+  .btn-cancel {
+    background-color: #ccc;
+  }
+</style>
+
+<div class="product-container">
+  <img src="{{ url_for('static', filename='images/' + product['image']) }}" class="product-image" alt="{{ product['name'] }}">
+  <div class="product-name">{{ product['name'] }}</div>
+  <div class="product-price">₹{{ product['price'] }}</div>
+  <div class="product-desc">{{ product['description'] }}</div>
+
+  <div class="form-group">
+    <label for="quantity"><strong>Quantity:</strong></label>
+    <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product['stock'] }}">
+  </div>
+
+  <button class="checkout-btn" onclick="openCheckoutModal()">Proceed to Checkout</button>
+</div>
+
+<!-- Modal -->
+<div id="checkoutModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Confirm Your Order</h3>
+    <p>Do you want to continue to checkout for:</p>
+    <p><strong>{{ product['name'] }}</strong></p>
+    <p>Quantity: <span id="modalQuantityText">1</span></p>
+    <form method="POST" action="{{ url_for('checkout', product_id=product['id']) }}">
+      <input type="hidden" id="modalQuantity" name="quantity" value="1">
+      <button type="submit" class="btn-confirm">Yes, Checkout</button>
+      <button type="button" class="btn-cancel" onclick="closeCheckoutModal()">Cancel</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function openCheckoutModal() {
+    const qty = document.getElementById('quantity').value;
+    document.getElementById('modalQuantity').value = qty;
+    document.getElementById('modalQuantityText').textContent = qty;
+    document.getElementById('checkoutModal').style.display = 'flex';
+  }
+
+  function closeCheckoutModal() {
+    document.getElementById('checkoutModal').style.display = 'none';
+  }
+</script>
+{% endblock %}

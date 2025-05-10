@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+  body {
+    background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+    background-attachment: fixed;
+  }
+
+  .glass-card {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+
+  .glass-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  .glass-img {
+    height: 220px;
+    object-fit: cover;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .order-btn {
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .order-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(0, 242, 254, 0.4);
+  }
+
+  .card-title {
+    font-weight: 600;
+    font-size: 1.25rem;
+  }
+
+  .welcome-heading {
+    font-size: 2.2rem;
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    -webkit-backgroundclip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+  }
+
+  .stock-info {
+    font-size: 0.9rem;
+  }
+
+  .price-tag {
+    font-size: 1.1rem;
+  }
+
+  .orders-btn {
+    margin-top: 20px;
+    font-weight: 600;
+  }
+</style>
+
+<div class="container py-5">
+  <h2 class="text-center mb-4 welcome-heading">Welcome, {{ session.username }} 👋</h2>
+
+  <div class="text-center mb-5">
+    <a href="{{ url_for('my_orders') }}" class="btn btn-outline-primary orders-btn">📦 View My Orders</a>
+  </div>
+
+  <div class="row g-4">
+    {% for product in products %}
+      <div class="col-md-6 col-lg-4">
+        <div class="glass-card h-100 d-flex flex-column">
+          {% if product.image %}
+            <img src="{{ url_for('static', filename='images/' + product.image) }}" class="glass-img w-100" alt="{{ product.name }}">
+          {% else %}
+            <div class="glass-img d-flex align-items-center justify-content-center text-muted bg-light">No Image</div>
+          {% endif %}
+
+          <div class="p-4 d-flex flex-column flex-grow-1">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="text-success fw-bold price-tag mb-2">₹{{ product.price }}</p>
+            <p class="text-muted mb-3 stock-info">In Stock: {{ product.stock }}</p>
+
+            <a href="{{ url_for('checkout', product_id=product.id) }}" class="btn order-btn w-100 text-white fw-semibold mt-auto">🚀 Order Now</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

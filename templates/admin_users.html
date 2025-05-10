@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Users</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      color: #2c3e50;
+      padding: 40px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(to right, #0f2027, #2c5364);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #1d3557;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #457b9d;
+    }
+
+    .user-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 15px;
+      margin-bottom: 30px;
+      overflow-x: auto;
+    }
+
+    .user-table thead {
+      background-color: rgba(255, 255, 255, 0.7);
+    }
+
+    .user-table th, .user-table td {
+      padding: 14px 20px;
+      text-align: left;
+      word-break: break-word;
+    }
+
+    .user-table tbody tr {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      transition: transform 0.2s ease;
+    }
+
+    .user-table tbody tr:hover {
+      transform: scale(1.01);
+    }
+
+    .user-table td {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    input[type="text"], select {
+      padding: 5px 10px;
+      margin: 5px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+      max-width: 160px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .actions form {
+      display: inline-block;
+    }
+
+    button {
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 114, 255, 0.3);
+      transition: all 0.3s ease;
+      width: 100%;
+      max-width: 180px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
+    }
+
+    .no-users {
+      text-align: center;
+      font-style: italic;
+      color: #6c757d;
+      margin-top: 20px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      color: #7b8fa1;
+      font-size: 0.9rem;
+    }
+
+    /* --- Responsive Rules --- */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px;
+      }
+
+      header h1 {
+        font-size: 1.8rem;
+      }
+
+      .user-table th, .user-table td {
+        font-size: 0.9rem;
+        padding: 10px;
+      }
+
+      form {
+        display: block;
+      }
+
+      .user-table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      input[type="text"], select, button {
+        width: 100%;
+        max-width: none;
+      }
+
+      .actions {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>👥 Admin - User Management</h1>
+    <nav>
+      <ul>
+        <li><a href="/admin">Dashboard</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2 class="text-center mb-4">📋 List of Users</h2>
+
+    {% if users %}
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>👤 Username</th>
+            <th>🔐 Role</th>
+            <th>⚙️ Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.role }}</td>
+            <td>
+              <form action="/admin/users/edit/{{ user.username }}" method="POST" style="display:inline;">
+                <input type="text" name="password" placeholder="New password" required />
+                <select name="role">
+                  <option value="user" {% if user.role == 'user' %}selected{% endif %}>User</option>
+                  <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                </select>
+                <button type="submit">Edit</button>
+              </form>
+              <form action="/admin/users/delete/{{ user.username }}" method="POST" style="display:inline;">
+                <button type="submit" onclick="return confirm('Delete {{ user.username }}?')">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="no-users">🚫 No users found.</p>
+    {% endif %}
+
+    <div class="actions">
+      <form action="{{ url_for('lock_admin') }}" method="post">
+        <input type="hidden" name="action" value="lock">
+        <button type="submit">🔒 Lock Admin Login</button>
+      </form>
+
+      <form action="{{ url_for('lock_admin') }}" method="post">
+        <input type="hidden" name="action" value="unlock">
+        <button type="submit">🔓 Unlock Admin Login</button>
+      </form>
+    </div>
+  </main>
+
+  <footer>
+    <p>🌐 &copy; 2025 Your Company. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

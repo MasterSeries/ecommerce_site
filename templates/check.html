@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<style>
+  /* Checkout Page Styles */
+  .checkout-container {
+    max-width: 1100px;
+    margin: auto;
+    background: #f9f9f9;
+    border-radius: 18px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 40px;
+  }
+
+  .checkout-container:hover {
+    transform: scale(1.02);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Progress Bar */
+  .progress-bar {
+    width: 100%;
+    height: 5px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+
+  .progress-bar span {
+    display: block;
+    height: 5px;
+    width: 33%;
+    background: linear-gradient(45deg, #00c6ff, #0072ff);
+    border-radius: 5px;
+    transition: width 0.3s ease;
+  }
+
+  /* Order Summary */
+  .order-summary {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .order-summary h4 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 15px;
+  }
+
+  .order-summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  /* Payment Section */
+  .payment-section {
+    background: #0072ff;
+    padding: 25px;
+    border-radius: 18px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    margin-top: 20px;
+  }
+
+  .payment-section h4 {
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+
+  .payment-section p {
+    font-size: 1.2rem;
+  }
+
+  .checkout-btn {
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 12px;
+    width: 100%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    margin-top: 20px;
+  }
+
+  .checkout-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-5px);
+  }
+
+  .checkout-btn:focus {
+    outline: none;
+  }
+</style>
+
+<div class="container py-5">
+  <div class="checkout-container">
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+      <span style="width: 33%"></span> <!-- You can adjust this based on progress -->
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+      <h4>Order Summary</h4>
+      <div class="order-summary-item">
+        <span>Product Name</span>
+        <span>₹{{ product['price'] }}</span>
+      </div>
+      <div class="order-summary-item">
+        <span>Quantity</span>
+        <span>{{ quantity }}</span>
+      </div>
+      <div class="order-summary-item">
+        <span>Total</span>
+        <span>₹{{ product['price'] * quantity }}</span>
+      </div>
+    </div>
+
+    <!-- Payment Section -->
+    <div class="payment-section">
+      <h4>Payment Information</h4>
+      <p>Choose your preferred payment method:</p>
+      <form method="POST" action="{{ url_for('complete_checkout') }}">
+        <div>
+          <label for="payment_method" class="form-label">Payment Method</label>
+          <select id="payment_method" name="payment_method" class="form-control">
+            <option value="card">Credit/Debit Card</option>
+            <option value="upi">UPI</option>
+            <option value="cod">Cash on Delivery</option>
+          </select>
+        </div>
+
+        <button type="submit" class="checkout-btn">Confirm Order</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

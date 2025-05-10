@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signup | Cocua</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-sky-200 via-emerald-200 to-blue-300 min-h-screen flex items-center justify-center font-inter">
+
+  <div class="relative bg-white/30 backdrop-blur-xl border border-white/40 rounded-2xl shadow-xl p-8 w-full max-w-sm transition transform hover:scale-[1.01] duration-300">
+    <h2 class="text-3xl font-bold text-center text-blue-900 mb-6">🚀 Create Account</h2>
+    
+    <form action="/signup" method="post" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-blue-800 mb-1">Username</label>
+        <input name="username" placeholder="e.g. johndoe123"
+               class="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+               required>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-blue-800 mb-1">Password</label>
+        <input type="password" name="password" placeholder="••••••••"
+               class="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+               required>
+      </div>
+
+      
+
+      <button type="submit"
+              class="w-full bg-gradient-to-r from-emerald-400 to-sky-500 text-white font-semibold py-3 rounded-xl shadow-md hover:from-sky-500 hover:to-emerald-400 transition-all duration-300">
+        Sign Up
+      </button>
+    </form>
+
+    <p class="text-sm text-center text-blue-800 mt-6">Already have an account?
+      <a href="/login" class="text-blue-700 font-semibold hover:underline">Log in</a>
+    </p>
+  </div>
+
+</body>
+</html>

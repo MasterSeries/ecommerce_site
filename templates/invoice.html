@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% block title %}Invoice - Order {{ order['id'] }}{% endblock %}
+
+{% block content %}
+<style>
+  .invoice-container {
+    max-width: 950px;
+    margin: 40px auto;
+    padding: 40px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+  }
+
+  .invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 20px;
+  }
+
+  .logo-title h1 {
+    margin: 0;
+    font-size: 34px;
+    color: #333;
+  }
+
+  .company-info {
+    text-align: right;
+    font-size: 14px;
+  }
+
+  .company-info h3 {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .invoice-meta, .customer-info {
+    margin-top: 25px;
+    font-size: 15px;
+  }
+
+  .customer-info h4 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #222;
+  }
+
+  .customer-info p {
+    margin: 5px 0;
+  }
+
+  .product-section {
+    margin-top: 30px;
+  }
+
+  .order-summary h4 {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .order-summary table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .order-summary th, .order-summary td {
+    padding: 14px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+
+  .order-summary th {
+    background: #f5f5f5;
+    font-weight: 600;
+  }
+
+  .order-summary td:last-child,
+  .order-summary th:last-child {
+    text-align: right;
+  }
+
+  .invoice-totals {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    font-size: 16px;
+  }
+
+  .status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    display: inline-block;
+  }
+
+  .status-pending { background-color: #ffc107; }
+  .status-shipped { background-color: #28a745; }
+  .status-cancelled { background-color: #dc3545; }
+  .status-default { background-color: #6c757d; }
+
+  .footer-text {
+    margin-top: 50px;
+    text-align: center;
+    font-size: 13px;
+    color: #777;
+  }
+
+  .print-btn {
+    margin-top: 20px;
+    text-align: right;
+  }
+
+  .print-btn button {
+    padding: 10px 20px;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+
+  .print-btn button:hover {
+    background: #0056b3;
+  }
+</style>
+
+<div class="invoice-container">
+  <div class="invoice-header">
+    <div class="logo-title">
+      <h1>INVOICE</h1>
+      <p><strong>Order ID:</strong> {{ order['id'] }}</p>
+      <p><strong>Date:</strong> {{ order['timestamp'] }}</p>
+    </div>
+    <div class="company-info">
+      <h3>MyStore B2B</h3>
+      <p>123 Business Rd,<br>Tech City, IN 400001<br>support@mystore.com</p>
+    </div>
+  </div>
+
+  <div class="customer-info">
+    <h4>Customer Details</h4>
+    <p><strong>Name:</strong> {{ order['customer_name'] }}</p>
+    <p><strong>Email:</strong> {{ order['customer_email'] }}</p>
+    <p><strong>Address:</strong> {{ order['customer_address'] }}</p>
+  </div>
+
+  <div class="product-section">
+    <div class="order-summary">
+      <h4>Product Summary</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Unit Price (₹)</th>
+            <th>Total (₹)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order['items'] %}
+          <tr>
+            <td>{{ item['product_name'] }}</td>
+            <td>{{ item['quantity'] }}</td>
+            <td>₹{{ "%.2f"|format(item['price']) }}</td>
+            <td>₹{{ "%.2f"|format(item['subtotal']) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="invoice-totals">
+    <div>
+      <p><strong>Status:</strong>
+        <span class="status-badge
+          {% if order['status'] == 'Pending' %}status-pending
+          {% elif order['status'] == 'Shipped' %}status-shipped
+          {% elif order['status'] == 'Cancelled' %}status-cancelled
+          {% else %}status-default{% endif %}">
+          {{ order['status'] }}
+        </span>
+      </p>
+    </div>
+    <div>
+      <p><strong>Total Paid:</strong> ₹{{ order['total_price'] }}</p>
+    </div>
+  </div>
+
+  <div class="print-btn">
+    <button onclick="window.print()">🖨️ Print Invoice</button>
+  </div>
+
+  <div class="footer-text">
+    <p>Thank you for choosing MyStore. This invoice is system-generated and requires no signature.</p>
+  </div>
+</div>
+{% endblock %}

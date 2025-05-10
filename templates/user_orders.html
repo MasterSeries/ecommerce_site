@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}My Orders{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4 text-center fw-bold">🧾 My Orders</h2>
+
+  {% if orders %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for order in orders %}
+        <div class="col">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="row g-0">
+              <div class="col-4 p-2 d-flex align-items-center">
+                <img src="{{ url_for('static', filename='images/' ~ order.image) }}" 
+                     class="img-fluid rounded" 
+                     alt="{{ order.product_name }}">
+              </div>
+              <div class="col-8">
+                <div class="card-body">
+                  <h5 class="card-title mb-1">{{ order.product_name }}</h5>
+                  <p class="mb-1 text-muted small"><i class="bi bi-box"></i> Quantity: {{ order.quantity }}</p>
+                  <p class="mb-1 text-muted small"><i class="bi bi-currency-rupee"></i> Total: ₹{{ order.subtotal }}</p>
+                  <p class="mb-1 text-muted small"><i class="bi bi-truck"></i> Delivery by: {{ order.estimated_delivery }}</p>
+                  
+                  <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="badge 
+                      {% if order.status == 'Delivered' %}
+                        bg-success
+                      {% elif order.status == 'Pending' %}
+                        bg-warning text-dark
+                      {% else %}
+                        bg-secondary
+                      {% endif %}">
+                      {{ order.status }}
+                    </span>
+                    <small class="text-muted">{{ order.order_date }}</small>
+                  </div>
+
+                  <div class="mt-3 d-flex flex-wrap gap-2">
+                    <a href="{{ url_for('track_order', order_id=order.id) }}" class="btn btn-sm btn-outline-primary">
+                      <i class="bi bi-geo-alt-fill"></i> Track
+                    </a>
+                    <a href="{{ url_for('reorder', order_id=order.id) }}" class="btn btn-sm btn-outline-success">
+                      <i class="bi bi-arrow-repeat"></i> Reorder
+                    </a>
+                    <a href="{{ url_for('view_invoice', order_id=order.id) }}" class="btn btn-sm btn-outline-secondary">
+                      <i class="bi bi-receipt-cutoff"></i> Invoice
+                    </a>
+                    <a href="{{ url_for('select_shops', order_id=order.id) }}" class="btn btn-sm btn-outline-info">
+                      <i class="bi bi-shop"></i> Shops
+                    </a>
+                  </div>                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-bag-x" style="font-size: 3rem;"></i>
+      <p class="mt-3">No orders placed yet.</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

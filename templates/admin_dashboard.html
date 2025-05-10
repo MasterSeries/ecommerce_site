@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Admin Dashboard{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+<div class="min-h-screen flex flex-col md:flex-row" x-data="{ open: true }">
+
+  <!-- Mobile Toggle -->
+  <div class="bg-white shadow-md md:hidden p-4 flex justify-between items-center">
+    <span class="text-lg font-bold">Admin</span>
+    <button @click="open = !open" class="md:hidden text-gray-600 focus:outline-none">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="bg-white w-full md:w-64 border-r shadow-md md:block transition-all duration-300"
+         :class="{ 'hidden': !open && window.innerWidth < 768 }">
+    <div class="p-4 border-b flex items-center justify-between md:justify-center">
+      <span class="text-xl font-bold">Admin</span>
+    </div>
+    <nav class="mt-4">
+      <a href="/admin" class="flex items-center px-4 py-3 hover:bg-blue-100 transition">
+        🏠 <span class="ml-3">Home</span>
+      </a>
+      <a href="/admin/orders" class="flex items-center px-4 py-3 hover:bg-blue-100 transition">
+        📦 <span class="ml-3">Orders</span>
+      </a>
+      <a href="/admin/products" class="flex items-center px-4 py-3 hover:bg-blue-100 transition">
+        🛍️ <span class="ml-3">Products</span>
+      </a>
+      <a href="/admin/users" class="flex items-center px-4 py-3 hover:bg-blue-100 transition">
+        👥 <span class="ml-3">Users</span>
+      </a>
+      <a href="/admin/logs" class="flex items-center px-4 py-3 hover:bg-blue-100 transition">
+        🕵️ <span class="ml-3">Login Logs</span>
+      </a>
+      <a href="/logout" class="flex items-center px-4 py-3 text-red-600 hover:bg-red-50 transition">
+        🚪 <span class="ml-3">Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+    <div class="mb-6 border-b pb-4">
+      <h1 class="text-3xl font-bold">Admin Dashboard</h1>
+      <p class="text-gray-500">Manage your store efficiently</p>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="mb-4">
+          {% for message in messages %}
+            <div class="bg-yellow-100 border border-yellow-300 text-yellow-700 px-4 py-2 rounded mb-2">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    <!-- Dynamic content goes here -->
+    {% endblock %}
+  </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(to right, #e3f2fd, #ffffff);
+  }
+
+  .checkout-container {
+    max-width: 850px;
+    margin: 50px auto;
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    padding: 30px;
+  }
+
+  .checkout-image {
+    width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+
+  .checkout-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .checkout-price {
+    font-size: 1.5rem;
+    color: #28a745;
+    margin-bottom: 10px;
+  }
+
+  .checkout-stock {
+    font-size: 1.1rem;
+    color: #777;
+    margin-bottom: 20px;
+  }
+
+  .checkout-description {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 25px;
+  }
+
+  .quantity-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 20px;
+  }
+
+  .quantity-row input {
+    width: 90px;
+    height: 40px;
+    text-align: center;
+    font-size: 1.2rem;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+  }
+
+  .checkout-total {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #000;
+    margin-top: 10px;
+  }
+
+  .btn-checkout {
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    color: white;
+    font-weight: bold;
+    padding: 15px;
+    width: 100%;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    border: none;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+  }
+
+  .btn-checkout:hover {
+    transform: scale(1.03);
+    opacity: 0.9;
+  }
+</style>
+
+<div class="checkout-container">
+  {% if product %}
+    <img src="{{ url_for('static', filename='images/' + product['image']) }}" class="checkout-image" alt="{{ product['name'] }}">
+
+    <h2 class="checkout-title">{{ product['name'] }}</h2>
+    <div class="checkout-price">Price: ₹{{ product['price'] }}</div>
+    <div class="checkout-stock">In stock: {{ product['stock'] }}</div>
+    <div class="checkout-description">{{ product['description'] }}</div>
+
+    <form method="POST">
+      <div class="quantity-row">
+        <label for="quantity"><strong>Quantity:</strong></label>
+        <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product['stock'] }}" required oninput="updateTotal()">
+      </div>
+
+      <div class="checkout-total">Total: ₹<span id="total">{{ product['price'] }}</span></div>
+
+      <button type="submit" class="btn-checkout">Confirm Order</button>
+    </form>
+  {% else %}
+    <p>Product not found.</p>
+  {% endif %}
+</div>
+
+<script>
+  const price = {{ product['price'] }};
+  function updateTotal() {
+    const quantity = parseInt(document.getElementById('quantity').value);
+    const total = isNaN(quantity) ? price : quantity * price;
+    document.getElementById('total').textContent = total;
+  }
+</script>
+<div class="container mt-4">
+  <div class="row">
+    {% for product in products %}
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+      <div class="card h-100">
+        <img src="{{ url_for('static', filename='images/' + product.image) }}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text">₹{{ product.price }}</p>
+          <a href="/order/{{ product.id }}" class="btn btn-primary w-100">Buy Now</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+{% endblock %}
